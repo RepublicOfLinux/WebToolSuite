@@ -32,6 +32,8 @@
             overflow: hidden;
             animation: fadeIn 1.5s ease-in-out, ambientGlow 5s infinite;
             transition: background 0.5s, box-shadow 0.5s;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .title {
@@ -43,3 +45,95 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
+            width: 100%;
+        }
+
+        .tool {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background: rgba(28, 31, 35, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.3s, box-shadow 0.3s;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tool:hover {
+            background: rgba(42, 46, 53, 0.8);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+        }
+
+        .tool img {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 10px;
+        }
+
+        .tool span {
+            font-size: 18px;
+            color: #c9d1d9;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes ambientGlow {
+            0% { box-shadow: 0 0 10px rgba(201, 209, 217, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(201, 209, 217, 0.8); }
+            100% { box-shadow: 0 0 10px rgba(201, 209, 217, 0.3); }
+        }
+
+        @keyframes ambientBackground {
+            0% { background: #0d1117; }
+            50% { background: #1c1f23; }
+            100% { background: #0d1117; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">Web Tools</div>
+        <div class="tool-list">
+            <a href="AdvanceCalculator.html" class="tool">
+                <img src="icons/calculator.png" alt="Calculator Icon">
+                <span>Advanced Calculator</span>
+            </a>
+            <a href="MediaPlayer.html" class="tool">
+                <img src="icons/media_player.png" alt="Media Player Icon">
+                <span>Media Player</span>
+            </a>
+            <a href="WordPad.html" class="tool">
+                <img src="icons/wordpad.png" alt="WordPad Icon">
+                <span>WordPad</span>
+            </a>
+            <a href="OnlineExce.html" class="tool">
+                <img src="icons/excel.png" alt="Excel Icon">
+                <span>Online Excel</span>
+            </a>
+            <a href="SlidesOnline.html" class="tool">
+                <img src="icons/powerpoint.png" alt="PowerPoint Icon">
+                <span>Slides Online</span>
+            </a>
+            <a href="OnlineMailer.html" class="tool">
+                <img src="icons/mail.png" alt="Mail Icon">
+                <span>Online Mailer</span>
+            </a>
+            <a href="OnlinePhotoeditor.html" class="tool">
+                <img src="icons/photo_editor.png" alt="Photo Editor Icon">
+                <span>Online Photo Editor</span>
+            </a>
+            <a href="PaintBrush.html" class="tool">
+                <img src="icons/paint_brush.png" alt="Paint Brush Icon">
+                <span>Paint Brush</span>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
