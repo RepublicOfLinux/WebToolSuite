@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ambient Modern WordPad</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+            background: #0d1117;
+            color: #c9d1d9;
+            animation: ambientBackground 15s infinite;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .toolbar button, .toolbar select {
+            background: #0078D4;
+            border: none;
+            color: white;
+            padding: 10px;
+            margin: 0 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        .toolbar button:hover, .toolbar select:hover {
+            background: #005a9e;
+            transform: translateY(-3px);
+        }
+
+        .toolbar select {
+            padding: 9px;
+        }
+
+        .editor {
+            width: 100%;
+            max-width: 800px;
+            height: 600px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            background: rgba(33, 38, 45, 0.8);
+            color: #c9d1d9;
+            overflow-y: auto;
+            box-shadow: 0 0 30px rgba(201, 209, 217, 0.8);
+            animation: ambientGlow 5s infinite;
+        }
+
+        @keyframes ambientGlow {
+            0% { box-shadow: 0 0 10px rgba(201, 209, 217, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(201, 209, 217, 0.8); }
+            100% { box-shadow: 0 0 10px rgba(201, 209, 217, 0.3); }
+        }
+
+        @keyframes ambientBackground {
+            0% { background: #0d1117; }
+            50% { background: #1c1f23; }
+            100% { background: #0d1117; }
+        }
+    </style>
+</head>
+<body>
+    <div class="toolbar">
+        <button onclick="execCmd('bold')">Bold</button>
+        <button onclick="execCmd('italic')">Italic</button>
+        <button onclick="execCmd('underline')">Underline</button>
+        <button onclick="execCmd('undo')">Undo</button>
+        <button onclick="execCmd('redo')">Redo</button>
+        <button onclick="execCmd('justifyLeft')">Left</button>
+        <button onclick="execCmd('justifyCenter')">Center</button>
+        <button onclick="execCmd('justifyRight')">Right</button>
+        <button onclick="execCmd('insertUnorderedList')">Bullets</button>
+        <button onclick="execCmd('insertOrderedList')">Numbering</button>
+        <button onclick="execCmd('createLink', prompt('Enter URL:', 'http://'))">Link</button>
+        <button onclick="execCmd('unlink')">Remove Link</button>
+        <select onchange="execCmd('fontName', this.value)">
+            <option value="Segoe UI">Segoe UI</option>
+            <option value="Arial">Arial</option>
+            <option value="Times New Roman">Times New Roman</option>
+            <option value="Courier New">Courier New</option>
+            <option value="Verdana">Verdana</option>
+        </select>
+        <select onchange="execCmd('fontSize', this.value)">
+            <option value="1">Small</option>
+            <option value="3" selected>Normal</option>
+            <option value="5">Large</option>
+            <option value="7">Huge</option>
+        </select>
+        <button onclick="uploadFile()">Upload</button>
+        <button onclick="saveFile()">Save</button>
+        <input type="file" id="file-input" style="display: none;" onchange="readFile()">
+    </div>
+    <div class="editor" id="editor" contenteditable="true"></div>
+
+    <script>
+        function execCmd(command, value = null) {
+            document.execCommand(command, false, value);
+        }
+
+        function uploadFile() {
+            document.getElementById('file-input').click();
+        }
+
+        function readFile() {
+            const fileInput = document.getElementById('file-input');
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const editor = document.getElementById('editor');
+                editor.innerHTML = e.target.result;
+            }
+
+            reader.readAsText(file);
+        }
+
+        function saveFile() {
+            const editor = document.getElementById('editor');
+            const text = editor.innerHTML;
+            const blob = new Blob([text], { type: 'text/html' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'document.html';
+            a.click();
+        }
+    </script>
+</body>
+</html>

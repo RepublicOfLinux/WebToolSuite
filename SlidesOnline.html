@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ambient Modern PowerPoint Tool</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: #0d1117;
+            color: #c9d1d9;
+            animation: ambientBackground 15s infinite;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 90%;
+            max-width: 1000px;
+            padding: 20px;
+            background: rgba(33, 38, 45, 0.8);
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            animation: fadeIn 1.5s ease-in-out;
+            transition: background 0.5s, box-shadow 0.5s;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .toolbar button, .toolbar select {
+            background: #0078D4;
+            border: none;
+            color: white;
+            padding: 10px;
+            margin: 0 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        .toolbar button:hover, .toolbar select:hover {
+            background: #005a9e;
+            transform: translateY(-3px);
+        }
+
+        .slides {
+            width: 100%;
+            height: 400px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            background: rgba(33, 38, 45, 0.8);
+            color: #c9d1d9;
+            overflow-y: auto;
+            box-shadow: 0 0 30px rgba(201, 209, 217, 0.8);
+            animation: ambientGlow 5s infinite;
+        }
+
+        .slide {
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: #1c1f23;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            color: #c9d1d9;
+        }
+
+        .slide h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .slide p {
+            font-size: 18px;
+        }
+
+        .slide img {
+            max-width: 100%;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes ambientGlow {
+            0% { box-shadow: 0 0 10px rgba(201, 209, 217, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(201, 209, 217, 0.8); }
+            100% { box-shadow: 0 0 10px rgba(201, 209, 217, 0.3); }
+        }
+
+        @keyframes ambientBackground {
+            0% { background: #0d1117; }
+            50% { background: #1c1f23; }
+            100% { background: #0d1117; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="toolbar">
+            <button onclick="addSlide()">Add Slide</button>
+            <button onclick="removeSlide()">Remove Slide</button>
+            <button onclick="execCmd('bold')">Bold</button>
+            <button onclick="execCmd('italic')">Italic</button>
+            <button onclick="execCmd('underline')">Underline</button>
+            <button onclick="execCmd('insertImage', prompt('Enter image URL:', 'http://'))">Insert Image</button>
+            <button onclick="execCmd('justifyLeft')">Left</button>
+            <button onclick="execCmd('justifyCenter')">Center</button>
+            <button onclick="execCmd('justifyRight')">Right</button>
+            <button onclick="applyTransition()">Transition</button>
+            <button onclick="savePresentation()">Save</button>
+            <button onclick="uploadPresentation()">Upload</button>
+            <button onclick="startPresentation()">Present</button>
+            <input type="file" id="file-input" style="display: none;" onchange="readFile()">
+        </div>
+        <div class="slides" id="slides">
+            <div class="slide" contenteditable="true">
+                <h2>Slide Title</h2>
+                <p>Slide content goes here.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function execCmd(command, value = null) {
+            document.execCommand(command, false, value);
+        }
+
+        function addSlide() {
+            const slidesContainer = document.getElementById('slides');
+            const newSlide = document.createElement('div');
+            newSlide.className = 'slide';
+            newSlide.contentEditable = 'true';
+            newSlide.innerHTML = '<h2>Slide Title</h2><p>Slide content goes here.</p>';
+            slidesContainer.appendChild(newSlide);
+        }
+
+        function removeSlide() {
+            const slidesContainer = document.getElementById('slides');
+            if (slidesContainer.children.length > 1) {
+                slidesContainer.removeChild(slidesContainer.lastChild);
+            } else {
+                alert('Cannot remove the last slide.');
+            }
+        }
+
+        function applyTransition() {
+            const slides = document.getElementsByClassName('slide');
+            for (let i = 0; i < slides.length; i++) {
+                slides[i].style.transition = 'all 1s ease';
+                slides[i].style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    slides[i].style.transform = 'translateX(0)';
+                }, 1000);
+            }
+        }
+
+        function savePresentation() {
+            const slidesContainer = document.getElementById('slides');
+            const presentationContent = slidesContainer.innerHTML;
+            const blob = new Blob([presentationContent], { type: 'text/html' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'presentation.html';
+            a.click();
+        }
+
+        function uploadPresentation() {
+            document.getElementById('file-input').click();
+        }
+
+        function readFile() {
+            const fileInput = document.getElementById('file-input');
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const slidesContainer = document.getElementById('slides');
+                slidesContainer.innerHTML = e.target.result;
+            }
+
+            reader.readAsText(file);
+        }
+
+        function startPresentation() {
+            const slides = document.getElementsByClassName('slide');
+            let currentSlide = 0;
+
+            function showSlide(index) {
+                for (let i = 0; i < slides.length; i++) {
+                    slides[i].style.display = i === index ? 'block' : 'none';
+                }
+            }
+
+            function nextSlide() {
+                currentSlide = (currentSlide + 1) % slides.length;
+                showSlide(currentSlide);
+            }
+
+            function previousSlide() {
+                currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+                showSlide(currentSlide);
+            }
+
+            document.body.addEventListener('keydown', function(event) {
+                if (event.key === 'ArrowRight') {
+                    nextSlide();
+                } else if (event.key === 'ArrowLeft') {
+                    previousSlide();
+                }
+            });
+
+            showSlide(currentSlide);
+        }
+    </script>
+</body>
+</html>

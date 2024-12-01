@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ambient Modern Paint Tool</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background: #0d1117;
+            color: #c9d1d9;
+            animation: ambientBackground 15s infinite;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 90%;
+            max-width: 1000px;
+            padding: 20px;
+            background: rgba(33, 38, 45, 0.8);
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            animation: fadeIn 1.5s ease-in-out, ambientGlow 5s infinite;
+            transition: background 0.5s, box-shadow 0.5s;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .toolbar button, .toolbar input {
+            background: #0078D4;
+            border: none;
+            color: white;
+            padding: 10px;
+            margin: 0 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        .toolbar button:hover, .toolbar input:hover {
+            background: #005a9e;
+            transform: translateY(-3px);
+        }
+
+        canvas {
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            background: #1c1f23;
+            box-shadow: 0 0 30px rgba(201, 209, 217, 0.8);
+            animation: ambientGlow 5s infinite;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes ambientGlow {
+            0% { box-shadow: 0 0 10px rgba(201, 209, 217, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(201, 209, 217, 0.8); }
+            100% { box-shadow: 0 0 10px rgba(201, 209, 217, 0.3); }
+        }
+
+        @keyframes ambientBackground {
+            0% { background: #0d1117; }
+            50% { background: #1c1f23; }
+            100% { background: #0d1117; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="toolbar">
+            <button onclick="changeColor('black')">Black</button>
+            <button onclick="changeColor('red')">Red</button>
+            <button onclick="changeColor('green')">Green</button>
+            <button onclick="changeColor('blue')">Blue</button>
+            <button onclick="changeSize(2)">2px</button>
+            <button onclick="changeSize(5)">5px</button>
+            <button onclick="changeSize(10)">10px</button>
+            <button onclick="clearCanvas()">Clear</button>
+            <input type="file" id="upload" accept="image/*" onchange="uploadImage(event)">
+            <button onclick="downloadCanvas()">Save</button>
+        </div>
+        <canvas id="canvas" width="800" height="500"></canvas>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let painting = false;
+        let color = 'black';
+        let size = 5;
+
+        function startPosition(e) {
+            painting = true;
+            draw(e);
+        }
+
+        function endPosition() {
+            painting = false;
+            ctx.beginPath();
+        }
+
+        function draw(e) {
+            if (!painting) return;
+            ctx.lineWidth = size;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = color;
+
+            ctx.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+        }
+
+        function changeColor(newColor) {
+            color = newColor;
+        }
+
+        function changeSize(newSize) {
+            size = newSize;
+        }
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function uploadImage(e) {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(event) {
+                const img = new Image();
+                img.onload = function() {
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                }
+                img.src = event.target.result;
+            }
+
+            reader.readAsDataURL(file);
+        }
+
+        function downloadCanvas() {
+            const link = document.createElement('a');
+            link.download = 'painting.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        canvas.addEventListener('mousedown', startPosition);
+        canvas.addEventListener('mouseup', endPosition);
+        canvas.addEventListener('mousemove', draw);
+    </script>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Ambient Modern Graphical Calculator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: #0d1117;
+            color: #c9d1d9;
+            animation: ambientBackground 15s infinite;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 90%;
+            max-width: 400px;
+            padding: 20px;
+            background: rgba(33, 38, 45, 0.8);
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            animation: fadeIn 1.5s ease-in-out;
+            transition: background 0.5s, box-shadow 0.5s;
+        }
+
+        .display {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            background: #1c1f23;
+            border: none;
+            border-radius: 10px;
+            text-align: right;
+            font-size: 24px;
+            color: #c9d1d9;
+            box-shadow: 0 0 30px rgba(201, 209, 217, 0.8);
+            animation: ambientGlow 5s infinite;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .buttons button {
+            background: #0078D4;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            color: #fff;
+            font-size: 18px;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        .buttons button:hover {
+            background: #005a9e;
+            transform: translateY(-3px);
+        }
+
+        .refresh-button {
+            margin-top: 20px;
+            background: #ff4d4d;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            color: #fff;
+            font-size: 18px;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        .refresh-button:hover {
+            background: #ff1a1a;
+            transform: translateY(-3px);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes ambientGlow {
+            0% { box-shadow: 0 0 10px rgba(201, 209, 217, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(201, 209, 217, 0.8); }
+            100% { box-shadow: 0 0 10px rgba(201, 209, 217, 0.3); }
+        }
+
+        @keyframes ambientBackground {
+            0% { background: #0d1117; }
+            50% { background: #1c1f23; }
+            100% { background: #0d1117; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <input type="text" class="display" id="display" readonly>
+        <div class="buttons">
+            <button onclick="clearDisplay()">C</button>
+            <button onclick="deleteLast()">Del</button>
+            <button onclick="appendCharacter('(')">(</button>
+            <button onclick="appendCharacter(')')">)</button>
+            <button onclick="appendCharacter('7')">7</button>
+            <button onclick="appendCharacter('8')">8</button>
+            <button onclick="appendCharacter('9')">9</button>
+            <button onclick="appendCharacter('/')">/</button>
+            <button onclick="appendCharacter('4')">4</button>
+            <button onclick="appendCharacter('5')">5</button>
+            <button onclick="appendCharacter('6')">6</button>
+            <button onclick="appendCharacter('*')">*</button>
+            <button onclick="appendCharacter('1')">1</button>
+            <button onclick="appendCharacter('2')">2</button>
+            <button onclick="appendCharacter('3')">3</button>
+            <button onclick="appendCharacter('-')">-</button>
+            <button onclick="appendCharacter('0')">0</button>
+            <button onclick="appendCharacter('.')">.</button>
+            <button onclick="calculateResult()">=</button>
+            <button onclick="appendCharacter('+')">+</button>
+            <button onclick="appendCharacter('^')">^</button>
+            <button onclick="appendCharacter('Math.sqrt(')">√</button>
+            <button onclick="appendCharacter('Math.sin(')">sin</button>
+            <button onclick="appendCharacter('Math.cos(')">cos</button>
+            <button onclick="appendCharacter('Math.tan(')">tan</button>
+            <button onclick="appendCharacter('Math.log(')">log</button>
+            <button onclick="appendCharacter('Math.exp(')">exp</button>
+        </div>
+        <button class="refresh-button" onclick="refreshPage()">Refresh</button>
+    </div>
+
+    <script>
+        function clearDisplay() {
+            document.getElementById('display').value = '';
+        }
+
+        function deleteLast() {
+            const display = document.getElementById('display');
+            display.value = display.value.slice(0, -1);
+        }
+
+        function appendCharacter(char) {
+            const display = document.getElementById('display');
+            display.value += char;
+        }
+
+        function calculateResult() {
+            const display = document.getElementById('display');
+            try {
+                display.value = eval(display.value);
+            } catch (e) {
+                display.value = 'Error';
+            }
+        }
+
+        function refreshPage() {
+            location.reload();
+        }
+    </script>
+</body>
+</html>

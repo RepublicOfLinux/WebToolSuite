@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ambient Modern Excel Tool</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: #0d1117;
+            color: #c9d1d9;
+            animation: ambientBackground 15s infinite;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 90%;
+            max-width: 1000px;
+            padding: 20px;
+            background: rgba(33, 38, 45, 0.8);
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            animation: fadeIn 1.5s ease-in-out;
+            transition: background 0.5s, box-shadow 0.5s;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .toolbar button {
+            background: #0078D4;
+            border: none;
+            color: white;
+            padding: 10px;
+            margin: 0 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        .toolbar button:hover {
+            background: #005a9e;
+            transform: translateY(-3px);
+        }
+
+        .spreadsheet {
+            width: 100%;
+            height: 400px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            background: rgba(33, 38, 45, 0.8);
+            color: #c9d1d9;
+            overflow-y: auto;
+            box-shadow: 0 0 30px rgba(201, 209, 217, 0.8);
+            animation: ambientGlow 5s infinite;
+        }
+
+        .spreadsheet table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .spreadsheet th, .spreadsheet td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .spreadsheet th {
+            background: #1c1f23;
+        }
+
+        .spreadsheet td[contenteditable="true"] {
+            background: #2a2e35;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes ambientGlow {
+            0% { box-shadow: 0 0 10px rgba(201, 209, 217, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(201, 209, 217, 0.8); }
+            100% { box-shadow: 0 0 10px rgba(201, 209, 217, 0.3); }
+        }
+
+        @keyframes ambientBackground {
+            0% { background: #0d1117; }
+            50% { background: #1c1f23; }
+            100% { background: #0d1117; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="toolbar">
+            <button onclick="addRow()">Add Row</button>
+            <button onclick="addColumn()">Add Column</button>
+            <button onclick="calculateSum()">Calculate Sum</button>
+            <button onclick="saveFile()">Save</button>
+            <input type="file" id="file-input" style="display: none;" onchange="readFile()">
+        </div>
+        <div class="spreadsheet" id="spreadsheet">
+            <table id="spreadsheet-table">
+                <thead>
+                    <tr>
+                        <th>A</th>
+                        <th>B</th>
+                        <th>C</th>
+                        <th>D</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true"></td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true"></td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function addRow() {
+            const table = document.getElementById('spreadsheet-table').getElementsByTagName('tbody')[0];
+            const newRow = table.insertRow();
+            const columnCount = table.rows[0].cells.length;
+            for (let i = 0; i < columnCount; i++) {
+                const newCell = newRow.insertCell(i);
+                newCell.contentEditable = 'true';
+            }
+        }
+
+        function addColumn() {
+            const table = document.getElementById('spreadsheet-table');
+            const headerRow = table.rows[0];
+            const newHeaderCell = document.createElement('th');
+            newHeaderCell.textContent = String.fromCharCode(65 + headerRow.cells.length);
+            headerRow.appendChild(newHeaderCell);
+
+            for (let i = 1; i < table.rows.length; i++) {
+                const newCell = table.rows[i].insertCell(-1);
+                newCell.contentEditable = 'true';
+            }
+        }
+
+        function calculateSum() {
+            const table = document.getElementById('spreadsheet-table');
+            let sum = 0;
+            for (let i = 1; i < table.rows.length; i++) {
+                for (let j = 0; j < table.rows[i].cells.length; j++) {
+                    const cellValue = parseFloat(table.rows[i].cells[j].textContent) || 0;
+                    sum += cellValue;
+                }
+            }
+            alert('Sum: ' + sum);
+        }
+
+        function saveFile() {
+            const table = document.getElementById('spreadsheet-table').outerHTML;
+            const blob = new Blob([table], { type: 'text/html' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'spreadsheet.html';
+            a.click();
+        }
+
+        function readFile() {
+            const fileInput = document.getElementById('file-input');
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const spreadsheet = document.getElementById('spreadsheet');
+                spreadsheet.innerHTML = e.target.result;
+            }
+
+            reader.readAsText(file);
+        }
+    </script>
+</body>
+</html>

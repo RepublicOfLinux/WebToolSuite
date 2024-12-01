@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ambient Modern Mailing Tool</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: #0d1117;
+            color: #c9d1d9;
+            animation: ambientBackground 15s infinite;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 90%;
+            max-width: 800px;
+            padding: 20px;
+            background: rgba(33, 38, 45, 0.8);
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            animation: fadeIn 1.5s ease-in-out;
+            transition: background 0.5s, box-shadow 0.5s;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .toolbar button {
+            background: #0078D4;
+            border: none;
+            color: white;
+            padding: 10px;
+            margin: 0 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        .toolbar button:hover {
+            background: #005a9e;
+            transform: translateY(-3px);
+        }
+
+        .mailing-tool {
+            width: 100%;
+            height: 400px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            background: rgba(33, 38, 45, 0.8);
+            color: #c9d1d9;
+            overflow-y: auto;
+            box-shadow: 0 0 30px rgba(201, 209, 217, 0.8);
+            animation: ambientGlow 5s infinite;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .new-mail {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .mailbox {
+            width: 100%;
+        }
+
+        .mailbox input,
+        .new-mail input,
+        .new-mail textarea {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            background: #1c1f23;
+            color: #c9d1d9;
+        }
+
+        .mailbox .mail-item {
+            background: #1c1f23;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes ambientGlow {
+            0% { box-shadow: 0 0 10px rgba(201, 209, 217, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(201, 209, 217, 0.8); }
+            100% { box-shadow: 0 0 10px rgba(201, 209, 217, 0.3); }
+        }
+
+        @keyframes ambientBackground {
+            0% { background: #0d1117; }
+            50% { background: #1c1f23; }
+            100% { background: #0d1117; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="toolbar">
+            <button onclick="showNewMail()">New Mail</button>
+            <button onclick="showMailbox()">Inbox</button>
+        </div>
+        <div class="mailing-tool">
+            <div class="new-mail" id="new-mail">
+                <input type="text" placeholder="From" id="from-field">
+                <input type="text" placeholder="To" id="to-field">
+                <input type="text" placeholder="Subject">
+                <textarea rows="10" placeholder="Compose your email"></textarea>
+                <button onclick="sendMail()">Send</button>
+            </div>
+            <div class="mailbox" id="mailbox">
+                <div class="mail-item">Email 1: Subject - Message preview...</div>
+                <div class="mail-item">Email 2: Subject - Message preview...</div>
+                <div class="mail-item">Email 3: Subject - Message preview...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showNewMail() {
+            document.getElementById('new-mail').style.display = 'flex';
+            document.getElementById('mailbox').style.display = 'none';
+        }
+
+        function showMailbox() {
+            document.getElementById('new-mail').style.display = 'none';
+            document.getElementById('mailbox').style.display = 'block';
+        }
+
+        function sendMail() {
+            const fromField = document.getElementById('from-field').value;
+            const toField = document.getElementById('to-field').value;
+
+            if (fromField && toField) {
+                alert(`Mail sent from ${fromField} to ${toField}!`);
+                showMailbox();
+            } else {
+                alert('Please fill in both the "From" and "To" fields.');
+            }
+        }
+
+        // Show the mailbox by default
+        showMailbox();
+    </script>
+</body>
+</html>

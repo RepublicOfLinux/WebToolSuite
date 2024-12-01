@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ambient Modern Media Player</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            height: 100vh;
+            background: #0d1117;
+            color: #c9d1d9;
+            overflow: hidden;
+            animation: ambientBackground 15s infinite;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 90%;
+            height: 90%;
+            background: rgba(33, 38, 45, 0.8);
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            animation: fadeIn 1.5s ease-in-out;
+            transition: background 0.5s, box-shadow 0.5s;
+        }
+
+        .media-player {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 90%;
+            height: 90%;
+            padding: 20px;
+            position: relative;
+        }
+
+        .upload-container {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .upload-container:hover {
+            color: #c9d1d9;
+            transform: translateY(-3px);
+        }
+
+        .upload-icon {
+            font-size: 30px;
+            color: #c9d1d9;
+        }
+
+        .media-display {
+            width: 80%;
+            max-height: 60%;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            display: none;
+            box-shadow: 0 0 30px rgba(201, 209, 217, 0.8);
+            animation: ambientGlow 5s infinite;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 80%;
+            visibility: hidden;
+            background: rgba(33, 38, 45, 0.8);
+            padding: 10px;
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(201, 209, 217, 0.8);
+            animation: ambientGlow 5s infinite;
+        }
+
+        .controls button {
+            background: #c9d1d9;
+            border: none;
+            padding: 10px;
+            margin: 0 5px;
+            border-radius: 12px;
+            cursor: pointer;
+            color: #21262d;
+            font-size: 16px;
+        }
+
+        .controls button:hover {
+            background: #30363d;
+            color: #c9d1d9;
+        }
+
+        .remove-button {
+            background: #ff4d4d;
+            border: none;
+            padding: 10px;
+            margin-top: 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            color: #fff;
+            font-size: 16px;
+            display: none; /* Hidden initially */
+        }
+
+        .remove-button:hover {
+            background: #ff1a1a;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes ambientGlow {
+            0% { box-shadow: 0 0 10px rgba(201, 209, 217, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(201, 209, 217, 0.8); }
+            100% { box-shadow: 0 0 10px rgba(201, 209, 217, 0.3); }
+        }
+
+        @keyframes ambientBackground {
+            0% { background: #0d1117; }
+            50% { background: #1c1f23; }
+            100% { background: #0d1117; }
+        }
+
+        /* Hide the actual file input */
+        #media-upload {
+            display: none;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="container ambient">
+        <div class="media-player">
+            <label for="media-upload" class="upload-container" id="upload-container">
+                <i class="fas fa-upload upload-icon"></i>
+            </label>
+            <input type="file" id="media-upload" accept="audio/*,video/*" onchange="loadMedia()">
+            <video id="video-player" class="media-display ambient" controls></video>
+            <audio id="audio-player" class="media-display ambient" controls></audio>
+            <div class="controls ambient">
+                <button onclick="playMedia()"><i class="fas fa-play"></i></button>
+                <button onclick="pauseMedia()"><i class="fas fa-pause"></i></button>
+                <button onclick="stopMedia()"><i class="fas fa-stop"></i></button>
+            </div>
+            <button class="remove-button" onclick="removeMedia()">Remove File</button>
+        </div>
+    </div>
+
+    <script>
+        const videoPlayer = document.getElementById('video-player');
+        const audioPlayer = document.getElementById('audio-player');
+        const mediaUpload = document.getElementById('media-upload');
+        const uploadContainer = document.getElementById('upload-container');
+        const controls = document.querySelector('.controls');
+        const removeButton = document.querySelector('.remove-button');
+
+        function loadMedia() {
+            const file = mediaUpload.files[0];
+            const url = URL.createObjectURL(file);
+
+            if (file.type.startsWith('video')) {
+                videoPlayer.src = url;
+                videoPlayer.style.display = 'block';
+                audioPlayer.style.display = 'none';
+                controls.style.visibility = 'hidden';
+                videoPlayer.play();
+                removeButton.style.display = 'block';
+                uploadContainer.style.display = 'none';
+            } else if (file.type.startsWith('audio')) {
+                audioPlayer.src = url;
+                audioPlayer.style.display = 'block';
+                videoPlayer.style.display = 'none';
+                controls.style.visibility = 'visible';
+                audioPlayer.play();
+                removeButton.style.display = 'block';
+                uploadContainer.style.display = 'none';
+            }
+        }
+
+        function playMedia() {
+            if (audioPlayer.style.display === 'block') {
+                audioPlayer.play();
+            }
+        }
+
+        function pauseMedia() {
+            if (audioPlayer.style.display === 'block') {
+                audioPlayer.pause();
+            }
+        }
+
+        function stopMedia() {
+            if (audioPlayer.style.display === 'block') {
+                audioPlayer.pause();
+                audioPlayer.currentTime = 0;
+            }
+        }
+
+        function removeMedia() {
+            location.reload(); // Refresh the page to reset the player
+        }
+    </script>
+</body>
+</html>
